@@ -1,0 +1,31 @@
+# Sensors
+sensor:
+  - platform: rest
+    name: solaredge_overview
+    scan_interval: 400
+    json_attributes:
+      - overview
+    value_template: '{{ value_json.states }}'
+    resource: https://monitoringapi.solaredge.com/site/xxx/overview?api_key=xxxx
+  - platform: template
+    sensors:
+      solaredge_currentpower:
+        friendly_name: 'SolarEdge Current Power Production'
+        value_template: '{{ states.sensor.solaredge_overview.attributes.overview.currentPower.power | float | round(2) }}'
+        unit_of_measurement: 'W'
+      solaredge_lastdayenergy:
+        friendly_name: 'SolarEdge Last Day Energy Production'
+        value_template: '{{ (states.sensor.solaredge_overview.attributes.overview.lastDayData.energy | float / 1000) | round(2) }}'
+        unit_of_measurement: 'kWh'
+      solaredge_lastmonthenergy:
+        friendly_name: 'SolarEdge Last Month Energy Production'
+        value_template: '{{ (states.sensor.solaredge_overview.attributes.overview.lastMonthData.energy | float / 1000) | round(2) }}'
+        unit_of_measurement: 'kWh'
+      solaredge_lastyearenergy:
+        friendly_name: 'SolarEdge Last Year Energy Production'
+        value_template: '{{ (states.sensor.solaredge_overview.attributes.overview.lastYearData.energy | float / 1000000) | round(2) }}'
+        unit_of_measurement: 'MWh'
+      solaredge_lifetimeenergy:
+        friendly_name: 'SolarEdge Life Energy Production'
+        value_template: '{{ (states.sensor.solaredge_overview.attributes.overview.lifeTimeData.energy | float / 1000000) | round(2) }}'
+        unit_of_measurement: 'MWh'
